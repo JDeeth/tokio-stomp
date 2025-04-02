@@ -97,12 +97,14 @@ pub enum ToServer {
     /// 'client' or 'client-individual' acknowledgment.
     Ack {
         // TODO ack and nack should be automatic?
-        id: String,
+        subscription: String,
+        message_id: String,
         transaction: Option<String>,
     },
     /// Notify the server that the client did not consume the message
     Nack {
-        id: String,
+        subscription: String,
+        message_id: String,
         transaction: Option<String>,
     },
     /// Start a transaction

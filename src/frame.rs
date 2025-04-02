@@ -233,14 +233,16 @@ impl<'a> Frame<'a> {
             b"ACK" | b"ack" => {
                 expect_keys = &[b"id", b"transaction"];
                 Ack {
-                    id: eh(h, "id")?,
+                    subscription: eh(h, "subscription")?,
+                    message_id: eh(h, "id")?,
                     transaction: fh(h, "transaction"),
                 }
             }
             b"NACK" | b"nack" => {
                 expect_keys = &[b"id", b"transaction"];
                 Nack {
-                    id: eh(h, "id")?,
+                    subscription: eh(h, "subscription")?,
+                    message_id: eh(h, "id")?,
                     transaction: fh(h, "transaction"),
                 }
             }
@@ -419,23 +421,27 @@ impl ToServer {
                 body.as_ref().map(|v| v.as_ref()),
             ),
             Ack {
-                ref id,
+                ref subscription,
+                ref message_id,
                 ref transaction,
             } => Frame::new(
                 b"ACK",
                 &[
-                    (b"id", Some(Borrowed(id.as_bytes()))),
+                    (b"subscription", Some(Borrowed(subscription.as_bytes()))),
+                    (b"message-id", Some(Borrowed(message_id.as_bytes()))),
                     (b"transaction", sb(transaction)),
                 ],
                 None,
             ),
             Nack {
-                ref id,
+                ref subscription,
+                ref message_id,
                 ref transaction,
             } => Frame::new(
                 b"NACK",
                 &[
-                    (b"id", Some(Borrowed(id.as_bytes()))),
+                    (b"subscription", Some(Borrowed(subscription.as_bytes()))),
+                    (b"message-id", Some(Borrowed(message_id.as_bytes()))),
                     (b"transaction", sb(transaction)),
                 ],
                 None,

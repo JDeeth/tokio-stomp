@@ -34,7 +34,7 @@ async fn client_handshake(
 ) -> Result<()> {
     let connect = Message {
         content: ToServer::Connect {
-            accept_version: "1.2".into(),
+            accept_version: "1.1".into(),
             host,
             login,
             passcode,
