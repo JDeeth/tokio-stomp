@@ -7,7 +7,7 @@ use tokio_util::codec::{Decoder, Encoder, Framed};
 
 pub type ClientTransport = Framed<TcpStream, ClientCodec>;
 
-use crate::frame;
+use crate::{frame, AckMode};
 use crate::{FromServer, Message, Result, ToServer};
 use anyhow::{anyhow, bail};
 
@@ -59,6 +59,16 @@ pub fn subscribe(dest: impl Into<String>, id: impl Into<String>) -> Message<ToSe
         destination: dest.into(),
         id: id.into(),
         ack: None,
+    }
+    .into()
+}
+
+/// Convenience function to build a Subscribe message with explicit auto ackmode
+pub fn subscribe_auto(dest: impl Into<String>, id: impl Into<String>) -> Message<ToServer> {
+    ToServer::Subscribe {
+        destination: dest.into(),
+        id: id.into(),
+        ack: Some(AckMode::Auto),
     }
     .into()
 }
